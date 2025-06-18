@@ -1,11 +1,10 @@
-import express, {Request, Response} from 'express'
+import express from 'express'
+import router from "./router/router";
 
 const port = 8080
 const app = express();
 app.use(express.json());
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).send('Hello, World!');
-})
+app.use('/api/v1', router);
 
 const main = async () => {
     app.listen(port, () => {
