@@ -1,6 +1,6 @@
 class AuthService {
     async login(username: string, password: string) {
-        if (username === 'admin' && password === 'admin') {
+        if (username === 'admin' && password === 'admin_password') {
             return {
                 token: 'token_hash_example'
             };
