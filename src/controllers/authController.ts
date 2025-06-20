@@ -1,5 +1,6 @@
-import {Request, Response} from 'express'
+import {Request, Response, NextFunction} from 'express'
 import AuthService from "../services/authService";
+import ApiError from "../exceptions/apiError";
 
 interface LoginBody {
     username?: string;
@@ -7,27 +8,25 @@ interface LoginBody {
 }
 
 class AuthController {
-    async login(req: Request<Record<string, never>, {}, LoginBody>, res: Response) {
+    async login(req: Request<Record<string, never>, {}, LoginBody>, res: Response, next: NextFunction) {
         try {
             const {username, password} = req.body ?? {}
 
             if (!username || !password) {
-                res.status(401).json({error: "Username and password are required"});
+                next(ApiError.BadRequest("Username and password are required"));
                 return
             }
 
             const token = await AuthService.login(username, password);
 
             if (!token) {
-                res.status(401).json({error: "Invalid credentials"});
+                next(ApiError.BadRequest("Invalid credentials"));
                 return
             }
 
             res.status(200).json(token)
         } catch (e) {
-            console.error(e);
-            res.status(500).json({error: 'Internal Server Error'});
-            return
+            next(e)
         }
     }
 }
