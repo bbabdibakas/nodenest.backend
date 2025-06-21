@@ -1,5 +1,5 @@
 services:
-  backend:
+  backend.dev:
     image: node:22
     container_name: nodenest.backend.dev
     working_dir: /app

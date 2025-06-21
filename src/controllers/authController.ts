@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from 'express'
-import AuthService from "../services/authService";
+import authService from "../services/authService";
 import ApiError from "../exceptions/apiError";
 
 interface LoginBody {
@@ -17,7 +17,8 @@ class AuthController {
                 return
             }
 
-            const token = await AuthService.login(username, password);
+            console.log(username, password);
+            const token = await authService.login(username, password);
 
             if (!token) {
                 next(ApiError.BadRequest("Invalid credentials"));
