@@ -1,9 +1,11 @@
 import express from 'express'
 import cors from 'cors'
+import {EnvService} from "./services/envService";
+const envService = new EnvService()
 import router from "./router/router";
 import errorMiddleware from "./middlewares/errorMiddleware";
 
-const port = 8080
+const port = envService.PORT
 const app = express();
 app.use(cors())
 app.use(express.json());
