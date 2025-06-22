@@ -1,7 +1,6 @@
-class AuthService {
+export class AuthService {
     async login(username: string, password: string) {
         if (username === 'admin' && password === 'admin_password') {
-
             return {
                 user: {
                     id: '4',
@@ -16,5 +15,3 @@ class AuthService {
         }
     }
 }
-
-export default new AuthService();

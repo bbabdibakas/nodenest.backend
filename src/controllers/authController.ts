@@ -1,6 +1,8 @@
 import {Request, Response, NextFunction} from 'express'
-import authService from "../services/authService";
 import ApiError from "../exceptions/apiError";
+import {AuthService} from "../services/authService";
+
+const authService = new AuthService();
 
 interface LoginBody {
     username?: string;
