@@ -3,6 +3,7 @@ export interface UserDTO {
     name: string;
     username: string;
     createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface CreateUserDTO {

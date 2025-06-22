@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken';
 import {EnvService} from "./envService";
 import {UserDTO} from "../dtos/UserDTO";
+import {PrismaClient} from "@prisma/client";
 
 const envService = new EnvService();
+const prisma = new PrismaClient();
 
 export class TokenService {
     async generateToken(payload: UserDTO) {
@@ -17,5 +19,13 @@ export class TokenService {
 
     validateRefreshToken(refreshToken: string) {
         return jwt.verify(refreshToken, envService.JWT_REFRESH_SECRET);
+    }
+
+    saveToken(userId: number, refreshToken: string) {
+        return prisma.token.upsert({
+            where: {userId},
+            update: {refreshToken},
+            create: {userId, refreshToken},
+        });
     }
 }

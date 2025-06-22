@@ -3,9 +3,9 @@ import {TokenService} from "./tokenService";
 import {PrismaClient} from "@prisma/client";
 import {UserEntity} from "../entities/UserEntity";
 import bcrypt from "bcrypt";
+import {userEntityToDTO} from "../utils/userEntityToDTO";
 
 const prisma = new PrismaClient();
-
 const tokenService = new TokenService();
 
 export class UserService {
@@ -18,17 +18,22 @@ export class UserService {
             }
         })
 
-        const {password, ...userWithoutPassword} = user;
+        const userDTO = userEntityToDTO(user)
+        const tokens = await tokenService.generateToken(userDTO)
+        await tokenService.saveToken(userDTO.id, tokens.refreshToken)
 
-        const tokens = await tokenService.generateToken(userWithoutPassword)
-        const {accessToken, refreshToken} = tokens
-
-        console.log({user, accessToken, refreshToken})
-
-        return {user, tokens}
+        return {userDTO, tokens}
     }
 
     async getUsers() {
-        return prisma.user.findMany()
+        return prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        })
     }
 }
