@@ -1,17 +1,21 @@
+import {PrismaClient} from "@prisma/client";
+import ApiError from "../exceptions/apiError";
+import bcrypt from "bcrypt";
+
+const prisma = new PrismaClient();
+
 export class AuthService {
     async login(username: string, password: string) {
-        if (username === 'admin' && password === 'admin_password') {
-            return {
-                user: {
-                    id: '4',
-                    name: 'Admin Admin',
-                    username: 'admin',
-                    password: 'admin_password',
-                },
-                token: 'token_hash_example'
-            };
-        } else {
-            return null
+        const user = await prisma.user.findUnique({where: {username: username}});
+        if (!user) {
+            throw ApiError.NotFound("User not found");
         }
+
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+            throw ApiError.BadRequest("Invalid credentials")
+        }
+
+        return user;
     }
 }
