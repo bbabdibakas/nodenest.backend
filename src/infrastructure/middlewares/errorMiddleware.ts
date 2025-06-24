@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction, ErrorRequestHandler} from "express";
+import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
 
 const errorMiddleware = (error: unknown, req: Request, res: Response, next: NextFunction) => {

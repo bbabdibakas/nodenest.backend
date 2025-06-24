@@ -22,18 +22,24 @@ export class TokenRepository implements ITokenRepository {
         );
     }
 
-    async updateToken(token: Token): Promise<Token> {
-        const updated = await this.prisma.token.update({
-            where: { id: token.id },
-            data: { refreshToken: token.refreshToken },
+    async upsertToken(token: Token): Promise<Token> {
+        const upserted = await this.prisma.token.upsert({
+            where: { userId: token.userId },
+            create: {
+                refreshToken: token.refreshToken,
+                userId: token.userId,
+            },
+            update: {
+                refreshToken: token.refreshToken,
+            },
         });
 
         return new Token(
-            updated.id,
-            updated.refreshToken,
-            updated.userId,
-            updated.createdAt,
-            updated.updatedAt
+            upserted.id,
+            upserted.refreshToken,
+            upserted.userId,
+            upserted.createdAt,
+            upserted.updatedAt
         );
     }
 }

@@ -1,6 +1,6 @@
 import AxiosInstance = Axios.AxiosInstance;
 import axios from 'axios';
-import {EnvService} from "./envService";
+import {EnvService} from "./EnvService";
 
 interface HetznerServer {
     id: number;
@@ -93,17 +93,18 @@ interface HetznerServersResponse {
     };
 }
 
-const envService = new EnvService();
-
 export class HetznerService {
     private axiosInstance: AxiosInstance;
     private readonly perPage = 30;
 
-    constructor() {
+    constructor(
+        private envService: EnvService
+    ) {
+
         this.axiosInstance = axios.create({
-            baseURL: envService.HETZNER_API_URL,
+            baseURL: this.envService.HETZNER_API_URL,
             headers: {
-                Authorization: `Bearer ${envService.HETZNER_API_KEY}`,
+                Authorization: `Bearer ${this.envService.HETZNER_API_KEY}`,
             },
         });
     }
