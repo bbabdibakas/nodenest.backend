@@ -4,15 +4,17 @@ import {AuthController} from "../controllers/AuthController";
 import {HetznerController} from "../controllers/HetznerController";
 import {TokenService} from "../../application/services/TokenService";
 import {authMiddleware} from "../middlewares/authMiddleware";
+import {EnvService} from "../../application/services/EnvService";
 
 export const router = (
     userController: UserController,
     authController: AuthController,
     hetznerController: HetznerController,
-    tokenService: TokenService
+    tokenService: TokenService,
+    envService: EnvService
 ) => {
     const router = Router();
-    const requireAuth = authMiddleware(tokenService);
+    const requireAuth = authMiddleware(tokenService, envService);
 
     router.post('/auth/login', authController.login.bind(authController));
     router.post('/users', userController.createUser.bind(userController));

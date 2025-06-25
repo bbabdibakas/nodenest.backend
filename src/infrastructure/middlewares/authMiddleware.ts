@@ -1,8 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import ApiError from "../exceptions/apiError";
 import {TokenService} from "../../application/services/TokenService";
+import {EnvService} from "../../application/services/EnvService";
 
-export const authMiddleware = (tokenService: TokenService) => {
+export const authMiddleware = (tokenService: TokenService, envService: EnvService) => {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
             const authorizationHeader = req.headers.authorization;
@@ -13,6 +14,10 @@ export const authMiddleware = (tokenService: TokenService) => {
             const accessToken = authorizationHeader.split(' ')[1];
             if (!accessToken) {
                 return next(ApiError.UnauthorizedError('Not authorized.'));
+            }
+
+            if (accessToken === envService.APP_API_KEY) {
+                return next()
             }
 
             const userData = tokenService.validateAccessToken(accessToken);

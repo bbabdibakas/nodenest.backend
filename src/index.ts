@@ -28,9 +28,10 @@ const authController = new AuthController(authService);
 
 const port = envService.PORT
 const app = express();
+
 app.use(cors())
 app.use(express.json());
-app.use('/api/v1', router(userController, authController, hetznerController, tokenService));
+app.use('/api/v1', router(userController, authController, hetznerController, tokenService, envService));
 app.use(errorMiddleware);
 
 const main = async () => {

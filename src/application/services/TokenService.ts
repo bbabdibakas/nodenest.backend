@@ -17,6 +17,7 @@ export class TokenService {
         private envService: EnvService,
     ) {
     }
+
     generateTokens(payload: Payload) {
         const accessToken = jwt.sign(payload, this.envService.JWT_ACCESS_SECRET, {expiresIn: '15m'});
         const refreshToken = jwt.sign(payload, this.envService.JWT_REFRESH_SECRET, {expiresIn: '30d'});
@@ -29,6 +30,10 @@ export class TokenService {
     }
 
     async validateAccessToken(accessToken: string) {
-        return jwt.verify(accessToken, this.envService.JWT_ACCESS_SECRET);
+        try {
+            return jwt.verify(accessToken, this.envService.JWT_ACCESS_SECRET);
+        } catch (e) {
+            return null;
+        }
     }
 }
