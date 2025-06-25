@@ -32,4 +32,12 @@ export class AuthService {
             refreshToken,
         };
     }
+
+    async logout(refreshToken: string) {
+        const userData = await this.tokenService.validateRefreshToken(refreshToken);
+        if (!userData) {
+            return null
+        }
+        return this.tokenService.deleteToken(userData.id)
+    }
 }

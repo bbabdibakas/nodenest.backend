@@ -25,7 +25,30 @@ export class AuthController {
             }
 
             const userData = await this.authService.login(username, password)
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             res.status(200).json(userData)
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async logout(
+        req: Request & { cookies: { refreshToken?: string } },
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const {refreshToken} = req.cookies
+
+            if (!refreshToken) {
+                res.status(204).end()
+                return
+            }
+
+            await this.authService.logout(refreshToken)
+
+            res.clearCookie('refreshToken')
+            res.status(204).end()
         } catch (e) {
             next(e)
         }

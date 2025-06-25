@@ -17,6 +17,7 @@ export const router = (
     const requireAuth = authMiddleware(tokenService, envService);
 
     router.post('/auth/login', authController.login.bind(authController));
+    router.post('/auth/logout', authController.logout.bind(authController));
     router.post('/users', userController.createUser.bind(userController));
     router.get('/users', requireAuth, userController.getUsers.bind(userController));
     router.get('/servers', requireAuth, hetznerController.getServers.bind(hetznerController));

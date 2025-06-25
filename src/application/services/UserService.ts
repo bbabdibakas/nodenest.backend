@@ -2,6 +2,7 @@ import {IUserRepository} from "../../core/interfaces/IUserRepository";
 import {User} from "../../core/entities/User";
 import bcrypt from "bcrypt";
 import {TokenService} from "./TokenService";
+import {UserDTO} from "../dtos/UserDTO";
 
 export class UserService {
     constructor(
@@ -36,7 +37,7 @@ export class UserService {
         return this.userRepository.getUsers();
     }
 
-    getPayload(user: User) {
+    getPayload(user: User): UserDTO {
         const {password, ...payload} = user;
         return payload;
     }

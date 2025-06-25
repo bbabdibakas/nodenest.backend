@@ -42,4 +42,18 @@ export class TokenRepository implements ITokenRepository {
             upserted.updatedAt
         );
     }
+
+    async deleteToken(token: Token): Promise<Token> {
+        const deleted = await this.prisma.token.delete({
+            where: { userId: token.userId },
+        })
+
+        return new Token(
+            deleted.id,
+            deleted.refreshToken,
+            deleted.userId,
+            deleted.createdAt,
+            deleted.updatedAt
+        )
+    }
 }

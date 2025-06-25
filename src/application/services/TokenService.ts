@@ -2,14 +2,8 @@ import {ITokenRepository} from "../../core/interfaces/ITokenRepository";
 import {Token} from "../../core/entities/Token";
 import jwt from "jsonwebtoken";
 import {EnvService} from "./EnvService";
-
-interface Payload {
-    id: number,
-    name: string,
-    username: string,
-    createdAt: Date,
-    updatedAt: Date,
-}
+import {UserDTO} from "../dtos/UserDTO";
+import {JWTPayloadDTO} from "../dtos/JWTPayloadDTO";
 
 export class TokenService {
     constructor(
@@ -18,7 +12,7 @@ export class TokenService {
     ) {
     }
 
-    generateTokens(payload: Payload) {
+    generateTokens(payload: UserDTO) {
         const accessToken = jwt.sign(payload, this.envService.JWT_ACCESS_SECRET, {expiresIn: '15m'});
         const refreshToken = jwt.sign(payload, this.envService.JWT_REFRESH_SECRET, {expiresIn: '30d'});
         return {accessToken, refreshToken};
@@ -29,11 +23,36 @@ export class TokenService {
         return this.tokenRepository.upsertToken(token);
     }
 
-    async validateAccessToken(accessToken: string) {
+    async validateAccessToken(accessToken: string): Promise<JWTPayloadDTO | null> {
         try {
-            return jwt.verify(accessToken, this.envService.JWT_ACCESS_SECRET);
+            const payload = jwt.verify(accessToken, this.envService.JWT_ACCESS_SECRET);
+
+            if (typeof payload === 'object' && payload !== null) {
+                return payload as JWTPayloadDTO;
+            }
+
+            return null;
         } catch (e) {
             return null;
         }
+    }
+
+    async validateRefreshToken(refreshToken: string): Promise<JWTPayloadDTO | null> {
+        try {
+            const payload = jwt.verify(refreshToken, this.envService.JWT_REFRESH_SECRET);
+
+            if (typeof payload === 'object' && payload !== null) {
+                return payload as JWTPayloadDTO;
+            }
+
+            return null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    async deleteToken(userId: number) {
+        const token = new Token(0, '', userId, new Date(), new Date());
+        return this.tokenRepository.deleteToken(token)
     }
 }

@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import {EnvService} from "./application/services/EnvService";
 import {router} from "./infrastructure/router/router";
 import errorMiddleware from "./infrastructure/middlewares/errorMiddleware";
@@ -29,7 +30,11 @@ const authController = new AuthController(authService);
 const port = envService.PORT
 const app = express();
 
-app.use(cors())
+app.use(cors({
+    credentials: true,
+    origin: true,
+}))
+app.use(cookieParser());
 app.use(express.json());
 app.use('/api/v1', router(userController, authController, hetznerController, tokenService, envService));
 app.use(errorMiddleware);
