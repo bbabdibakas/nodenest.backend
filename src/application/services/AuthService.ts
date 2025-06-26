@@ -27,7 +27,7 @@ export class AuthService {
         await this.tokenService.saveToken(refreshToken, user.id);
 
         return {
-            user,
+            user: payload,
             accessToken,
             refreshToken,
         };

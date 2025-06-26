@@ -26,7 +26,7 @@ export class AuthController {
 
             const userData = await this.authService.login(username, password)
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
-            res.status(200).json(userData)
+            res.status(200).json({user: userData.user, accessToken: userData.accessToken})
         } catch (e) {
             next(e)
         }

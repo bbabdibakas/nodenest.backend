@@ -33,8 +33,15 @@ export class UserService {
         return this.userRepository.getUserByUsername(username);
     }
 
-    async getUsers(): Promise<User[]> {
-        return this.userRepository.getUsers();
+    async getUsers() {
+        const users = await this.userRepository.getUsers();
+        return users.map((user) => ({
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            createdAt: new Date(user.createdAt),
+            updatedAt: new Date(user.updatedAt),
+        }))
     }
 
     getPayload(user: User): UserDTO {
