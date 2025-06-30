@@ -53,4 +53,26 @@ export class AuthController {
             next(e)
         }
     }
+
+    async refresh(
+        req: Request & { cookies: { refreshToken?: string } },
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+
+            const {refreshToken} = req.cookies
+
+            if (!refreshToken) {
+                next(ApiError.UnauthorizedError("Not authorized."));
+                return
+            }
+
+            const userData = await this.authService.refresh(refreshToken)
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+            res.status(200).json({user: userData.user, accessToken: userData.accessToken})
+        } catch (e) {
+            next(e)
+        }
+    }
 }

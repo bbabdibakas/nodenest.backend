@@ -13,7 +13,7 @@ export class TokenService {
     }
 
     generateTokens(payload: UserDTO) {
-        const accessToken = jwt.sign(payload, this.envService.JWT_ACCESS_SECRET, {expiresIn: '15m'});
+        const accessToken = jwt.sign(payload, this.envService.JWT_ACCESS_SECRET, {expiresIn: '15s'});
         const refreshToken = jwt.sign(payload, this.envService.JWT_REFRESH_SECRET, {expiresIn: '30d'});
         return {accessToken, refreshToken};
     }
@@ -23,7 +23,7 @@ export class TokenService {
         return this.tokenRepository.upsertToken(token);
     }
 
-    async validateAccessToken(accessToken: string): Promise<JWTPayloadDTO | null> {
+    validateAccessToken(accessToken: string): JWTPayloadDTO | null {
         try {
             const payload = jwt.verify(accessToken, this.envService.JWT_ACCESS_SECRET);
 
@@ -33,11 +33,12 @@ export class TokenService {
 
             return null;
         } catch (e) {
+            console.log(e);
             return null;
         }
     }
 
-    async validateRefreshToken(refreshToken: string): Promise<JWTPayloadDTO | null> {
+    validateRefreshToken(refreshToken: string): JWTPayloadDTO | null {
         try {
             const payload = jwt.verify(refreshToken, this.envService.JWT_REFRESH_SECRET);
 
