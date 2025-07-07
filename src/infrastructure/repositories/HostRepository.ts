@@ -74,6 +74,29 @@ export class HostRepository implements IHostRepository {
         )
     }
 
+    async getHosts(): Promise<Host[]> {
+        const hosts = await this.prisma.host.findMany()
+
+        return hosts.map(
+            (host) =>
+                new Host(
+                    host.id,
+                    host.hostId,
+                    host.name,
+                    host.status,
+                    host.created,
+                    host.ip,
+                    host.isIpBlocked,
+                    host.isUnreachable,
+                    host.isConfigFileExists,
+                    host.wabaHealthStatusCode,
+                    host.createdAt,
+                    host.updatedAt
+                )
+        )
+
+    }
+
     async getHostByIp(ip: string): Promise<Host | null> {
         const found = await this.prisma.host.findUnique({
             where: {ip},

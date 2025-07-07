@@ -24,7 +24,11 @@ export class HostService {
         return this.hostRepository.getHostByIp(ip)
     }
 
-    async createHost(hostData: CreateHostDTO) {
+    async getHosts(): Promise<Host[]> {
+        return this.hostRepository.getHosts()
+    }
+
+    async createHost(hostData: CreateHostDTO): Promise<Host> {
         const candidateHost = new Host(
             0,
             hostData.hostId,

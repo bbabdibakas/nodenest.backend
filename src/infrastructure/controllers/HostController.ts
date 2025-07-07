@@ -3,6 +3,10 @@ import ApiError from "../exceptions/apiError";
 import {HostService} from "../../application/services/HostService";
 import {HostStatus} from "../../core/entities/Host";
 
+export interface GetHostByIdDTO {
+    id: string;
+}
+
 export interface CreateHostDTO {
     hostId: number,
     name: string,
@@ -17,6 +21,40 @@ export interface CreateHostDTO {
 
 export class HostController {
     constructor(private hostService: HostService) {
+    }
+
+    async getHosts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const hosts = await this.hostService.getHosts()
+            res.status(200).json(hosts)
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async getHostById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const {
+                id
+            } = req.params || {}
+
+            const idNumber = Number(id);
+
+            if (isNaN(idNumber) || idNumber <= 0) {
+                next(ApiError.BadRequest('host id must be a number'));
+                return
+            }
+
+            const host = await this.hostService.getHostById(idNumber)
+
+            if (!host) {
+                next(ApiError.NotFound("Host not found"));
+                return
+            }
+            res.status(200).json(host)
+        } catch (e) {
+            next(e)
+        }
     }
 
     async createHost(
@@ -64,5 +102,4 @@ export class HostController {
             next(e)
         }
     }
-
 }

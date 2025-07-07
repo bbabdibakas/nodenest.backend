@@ -26,6 +26,8 @@ export const router = (
     router.get('/servers', requireAuth, hetznerController.getServers.bind(hetznerController));
 
     //host
+    router.get('/hosts', hostController.getHosts.bind(hostController));
+    router.get('/hosts/:id', hostController.getHostById.bind(hostController));
     router.post('/hosts', hostController.createHost.bind(hostController));
 
     return router
