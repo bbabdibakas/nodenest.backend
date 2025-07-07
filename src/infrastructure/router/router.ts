@@ -23,12 +23,11 @@ export const router = (
     router.post('/auth/refresh', authController.refresh.bind(authController));
     router.post('/users', userController.createUser.bind(userController));
     router.get('/users', requireAuth, userController.getUsers.bind(userController));
-    router.get('/servers', requireAuth, hetznerController.getServers.bind(hetznerController));
 
-    //host
+    //hosts
+    router.get('/hosts/hetzner', requireAuth, hetznerController.getServers.bind(hetznerController));
     router.get('/hosts', hostController.getHosts.bind(hostController));
-    router.get('/hosts/:id', hostController.getHostById.bind(hostController));
-    router.post('/hosts', hostController.createHost.bind(hostController));
+    router.post('/hosts/actualize', hostController.actualizeHosts.bind(hostController));
 
     return router
 }

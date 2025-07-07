@@ -3,10 +3,6 @@ import ApiError from "../exceptions/apiError";
 import {HostService} from "../../application/services/HostService";
 import {HostStatus} from "../../core/entities/Host";
 
-export interface GetHostByIdDTO {
-    id: string;
-}
-
 export interface CreateHostDTO {
     hostId: number,
     name: string,
@@ -17,6 +13,10 @@ export interface CreateHostDTO {
     isUnreachable: boolean | null,
     isConfigFileExists: boolean | null,
     wabaHealthStatusCode: number | null,
+}
+
+export interface ActualizeHostsDTO {
+    hosts: CreateHostDTO[];
 }
 
 export class HostController {
@@ -32,72 +32,23 @@ export class HostController {
         }
     }
 
-    async getHostById(req: Request, res: Response, next: NextFunction) {
-        try {
-            const {
-                id
-            } = req.params || {}
-
-            const idNumber = Number(id);
-
-            if (isNaN(idNumber) || idNumber <= 0) {
-                next(ApiError.BadRequest('host id must be a number'));
-                return
-            }
-
-            const host = await this.hostService.getHostById(idNumber)
-
-            if (!host) {
-                next(ApiError.NotFound("Host not found"));
-                return
-            }
-            res.status(200).json(host)
-        } catch (e) {
-            next(e)
-        }
-    }
-
-    async createHost(
-        req: Request<Record<string, never>, {}, CreateHostDTO>,
+    async actualizeHosts(
+        req: Request<Record<string, never>, {}, ActualizeHostsDTO>,
         res: Response,
         next: NextFunction
     ) {
         try {
             const {
-                hostId,
-                name,
-                status,
-                created,
-                ip,
+               hosts
             } = req.body || {}
 
-            if (!hostId || !name || !status || !created || !ip) {
-                next(ApiError.BadRequest("All data are required"));
-                return
-            }
-            const existedHostByHostId = await this.hostService.getHostByHostId(hostId);
-
-            if (existedHostByHostId) {
-                next(ApiError.BadRequest("Host already exists"));
+            if (!hosts || !hosts.length) {
+                next(ApiError.BadRequest("at least one host required"));
                 return
             }
 
-            const existedHostByName = await this.hostService.getHostByName(name);
-
-            if (existedHostByName) {
-                next(ApiError.BadRequest("Host already exists"));
-                return
-            }
-
-            const existedHostByIp = await this.hostService.getHostByIp(ip);
-
-            if (existedHostByIp) {
-                next(ApiError.BadRequest("Host already exists"));
-                return
-            }
-
-            const userData = await this.hostService.createHost(req.body)
-            res.status(200).json(userData)
+            const actualizedHosts = await this.hostService.actualizeHosts(hosts)
+            res.status(200).json(actualizedHosts)
         } catch (e) {
             next(e)
         }

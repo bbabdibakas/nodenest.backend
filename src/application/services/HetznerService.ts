@@ -67,7 +67,7 @@ interface HetznerServer {
 }
 
 interface FilteredHetznerServer {
-    id: number;
+    hostId: number;
     name: string;
     status: HetznerServer['status'];
     created: string;
@@ -134,7 +134,7 @@ export class HetznerService {
         const filteredServers: FilteredHetznerServer[] = allServers
             .filter(server => !excludedIds.includes(server.id))
             .map((server) => ({
-                id: server.id,
+                hostId: server.id,
                 name: server.name,
                 status: server.status,
                 created: server.created,

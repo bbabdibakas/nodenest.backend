@@ -8,27 +8,34 @@ export class HostService {
     ) {
     }
 
-    async getHostById(id: number): Promise<Host | null> {
-        return this.hostRepository.getHostById(id)
-    }
-
-    async getHostByHostId(hostId: number): Promise<Host | null> {
-        return this.hostRepository.getHostByHostId(hostId)
-    }
-
-    async getHostByName(name: string): Promise<Host | null> {
-        return this.hostRepository.getHostByName(name)
-    }
-
-    async getHostByIp(ip: string): Promise<Host | null> {
-        return this.hostRepository.getHostByIp(ip)
-    }
-
     async getHosts(): Promise<Host[]> {
         return this.hostRepository.getHosts()
     }
 
-    async createHost(hostData: CreateHostDTO): Promise<Host> {
+    async deleteHostsByHostId(ids: number[]) {
+        return this.hostRepository.deleteHostsByHostId(ids)
+    }
+
+    async actualizeHosts(hosts: CreateHostDTO[]): Promise<Host[]> {
+        let actualizedHosts:Host[] = []
+
+        for (const host of hosts) {
+            const actualizedHost = await this.saveHost(host)
+            actualizedHosts.push(actualizedHost)
+        }
+
+        const allHosts = await this.getHosts();
+        const actualizedHostIds = new Set(actualizedHosts.map(h => h.hostId));
+
+        const toDelete = allHosts.filter(h => !actualizedHostIds.has(h.hostId));
+        const toDeleteIds = toDelete.map(h => h.hostId);
+
+        await this.deleteHostsByHostId(toDeleteIds)
+
+        return actualizedHosts
+    }
+
+    async saveHost(hostData: CreateHostDTO): Promise<Host> {
         const candidateHost = new Host(
             0,
             hostData.hostId,
@@ -43,7 +50,6 @@ export class HostService {
             new Date(),
             new Date()
         )
-
-        return this.hostRepository.createHost(candidateHost);
+        return this.hostRepository.upsertHost(candidateHost);
     }
 }
