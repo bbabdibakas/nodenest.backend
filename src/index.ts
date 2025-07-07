@@ -13,18 +13,24 @@ import {AuthService} from "./application/services/AuthService";
 import {UserController} from "./infrastructure/controllers/UserController";
 import {HetznerController} from "./infrastructure/controllers/HetznerController";
 import {AuthController} from "./infrastructure/controllers/AuthController";
+import {HostService} from "./application/services/HostService";
+import {HostRepository} from "./infrastructure/repositories/HostRepository";
+import {HostController} from "./infrastructure/controllers/HostController";
 
 const tokenRepository = new TokenRepository();
+const hostRepository = new HostRepository();
 const userRepository = new UserRepository();
 
 const envService = new EnvService()
 const tokenService = new TokenService(tokenRepository, envService);
 const userService = new UserService(userRepository, tokenService);
+const hostService = new HostService(hostRepository);
 const hetznerService = new HetznerService(envService)
 const authService = new AuthService(userService, tokenService);
 
 const userController = new UserController(userService);
 const hetznerController = new HetznerController(hetznerService);
+const hostController = new HostController(hostService);
 const authController = new AuthController(authService);
 
 const port = envService.PORT
@@ -36,7 +42,7 @@ app.use(cors({
 }))
 app.use(cookieParser());
 app.use(express.json());
-app.use('/api/v1', router(userController, authController, hetznerController, tokenService, envService));
+app.use('/api/v1', router(userController, authController, hetznerController, hostController, tokenService, envService));
 app.use(errorMiddleware);
 
 const main = async () => {

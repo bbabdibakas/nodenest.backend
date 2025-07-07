@@ -29,3 +29,30 @@ model Token {
 
   @@map("tokens")
 }
+
+enum HostStatus {
+  initializing
+  running
+  deleting
+  offline
+  starting
+  stopping
+  error
+}
+
+model Host {
+  id                   Int        @id @default(autoincrement())
+  hostId               Int        @unique
+  name                 String     @unique
+  status               HostStatus
+  created              DateTime
+  ip                   String     @unique
+  isIpBlocked          Boolean
+  isUnreachable        Boolean?
+  isConfigFileExists   Boolean?
+  wabaHealthStatusCode Int?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  @@map("hosts")
+}

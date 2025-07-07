@@ -71,10 +71,8 @@ interface FilteredHetznerServer {
     name: string;
     status: HetznerServer['status'];
     created: string;
-    publicNetIPv4: {
-        ip: string;
-        blocked: boolean;
-    };
+    ip: string;
+    isIpBlocked: boolean;
 }
 
 interface Pagination {
@@ -110,6 +108,7 @@ export class HetznerService {
     }
 
     async getServers() {
+        const excludedIds = [22979375, 24778878, 29215499, 36327703, 48783866, 49804652, 52595493, 65160700, 65452897];
         let allServers: HetznerServer[] = [];
         let page = 1;
 
@@ -132,16 +131,16 @@ export class HetznerService {
             page = pagination.next_page;
         }
 
-        const filteredServers: FilteredHetznerServer[] = allServers.map((server) => ({
-            id: server.id,
-            name: server.name,
-            status: server.status,
-            created: server.created,
-            publicNetIPv4: {
+        const filteredServers: FilteredHetznerServer[] = allServers
+            .filter(server => !excludedIds.includes(server.id))
+            .map((server) => ({
+                id: server.id,
+                name: server.name,
+                status: server.status,
+                created: server.created,
                 ip: server.public_net.ipv4.ip,
-                blocked: server.public_net.ipv4.blocked,
-            },
-        }));
+                isIpBlocked: server.public_net.ipv4.blocked,
+            }));
 
         return filteredServers;
     }

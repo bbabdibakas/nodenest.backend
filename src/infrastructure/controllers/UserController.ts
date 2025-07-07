@@ -2,7 +2,7 @@ import {UserService} from "../../application/services/UserService";
 import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
 
-interface CreateUserDTO {
+export interface CreateUserDTO {
     name: string;
     username: string;
     password: string;
@@ -29,7 +29,7 @@ export class UserController {
                 return
             }
 
-            const userData = await this.userService.createUser(name, username, password)
+            const userData = await this.userService.createUser(req.body)
             res.status(200).json(userData)
         } catch (e) {
             next(e)

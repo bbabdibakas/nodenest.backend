@@ -3,6 +3,7 @@ import {User} from "../../core/entities/User";
 import bcrypt from "bcrypt";
 import {TokenService} from "./TokenService";
 import {UserDTO} from "../dtos/UserDTO";
+import {CreateUserDTO} from "../../infrastructure/controllers/UserController";
 
 export class UserService {
     constructor(
@@ -11,10 +12,10 @@ export class UserService {
     ) {
     }
 
-    async createUser(name: string, username: string, password: string) {
-        const hashPassword = await bcrypt.hash(password, 12);
+    async createUser(userData: CreateUserDTO) {
+        const hashPassword = await bcrypt.hash(userData.password, 12);
 
-        const candidateUser = new User(0, name, username, hashPassword, new Date(), new Date())
+        const candidateUser = new User(0, userData.name, userData.username, hashPassword, new Date(), new Date())
         const user = await this.userRepository.createUser(candidateUser);
 
         const payload = this.getPayload(user);

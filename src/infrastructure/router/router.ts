@@ -5,11 +5,13 @@ import {HetznerController} from "../controllers/HetznerController";
 import {TokenService} from "../../application/services/TokenService";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import {EnvService} from "../../application/services/EnvService";
+import {HostController} from "../controllers/HostController";
 
 export const router = (
     userController: UserController,
     authController: AuthController,
     hetznerController: HetznerController,
+    hostController: HostController,
     tokenService: TokenService,
     envService: EnvService
 ) => {
@@ -22,6 +24,9 @@ export const router = (
     router.post('/users', userController.createUser.bind(userController));
     router.get('/users', requireAuth, userController.getUsers.bind(userController));
     router.get('/servers', requireAuth, hetznerController.getServers.bind(hetznerController));
+
+    //host
+    router.post('/hosts', hostController.createHost.bind(hostController));
 
     return router
 }
