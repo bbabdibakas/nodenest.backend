@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
+import {injectable} from "tsyringe";
 dotenv.config();
 
+@injectable()
 export class EnvService {
     private readonly jwtAccessSecret: string;
     private readonly jwtRefreshSecret: string;

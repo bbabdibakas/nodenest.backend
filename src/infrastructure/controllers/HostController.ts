@@ -2,6 +2,7 @@ import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
 import {HostService} from "../../application/services/HostService";
 import {HostStatus} from "../../core/entities/Host";
+import {injectable} from "tsyringe";
 
 export interface CreateHostDTO {
     hostId: number,
@@ -19,6 +20,7 @@ export interface ActualizeHostsDTO {
     hosts: CreateHostDTO[];
 }
 
+@injectable()
 export class HostController {
     constructor(private hostService: HostService) {
     }
@@ -39,7 +41,7 @@ export class HostController {
     ) {
         try {
             const {
-               hosts
+                hosts
             } = req.body || {}
 
             if (!hosts || !hosts.length) {

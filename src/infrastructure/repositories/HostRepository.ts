@@ -1,7 +1,9 @@
 import {PrismaClient} from '@prisma/client';
 import {Host} from "../../core/entities/Host";
 import {IHostRepository} from "../../core/interfaces/IHostRepository";
+import {injectable} from "tsyringe";
 
+@injectable()
 export class HostRepository implements IHostRepository {
     private prisma = new PrismaClient();
 

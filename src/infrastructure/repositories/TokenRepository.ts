@@ -1,7 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { ITokenRepository } from '../../core/interfaces/ITokenRepository';
-import { Token } from '../../core/entities/Token';
+import {PrismaClient} from '@prisma/client';
+import {ITokenRepository} from '../../core/interfaces/ITokenRepository';
+import {Token} from '../../core/entities/Token';
+import {injectable} from "tsyringe";
 
+@injectable()
 export class TokenRepository implements ITokenRepository {
     private prisma = new PrismaClient();
 
@@ -24,7 +26,7 @@ export class TokenRepository implements ITokenRepository {
 
     async upsertToken(token: Token): Promise<Token> {
         const upserted = await this.prisma.token.upsert({
-            where: { userId: token.userId },
+            where: {userId: token.userId},
             create: {
                 refreshToken: token.refreshToken,
                 userId: token.userId,
@@ -45,7 +47,7 @@ export class TokenRepository implements ITokenRepository {
 
     async deleteToken(token: Token): Promise<Token> {
         const deleted = await this.prisma.token.delete({
-            where: { userId: token.userId },
+            where: {userId: token.userId},
         })
 
         return new Token(

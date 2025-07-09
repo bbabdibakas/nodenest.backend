@@ -1,12 +1,14 @@
 import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
 import {AuthService} from "../../application/services/AuthService";
+import {injectable} from "tsyringe";
 
 interface LoginUserDTO {
     username: string;
     password: string;
 }
 
+@injectable()
 export class AuthController {
     constructor(private authService: AuthService) {
     }

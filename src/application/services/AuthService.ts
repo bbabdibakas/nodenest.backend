@@ -2,7 +2,9 @@ import {UserService} from "./UserService";
 import ApiError from "../../infrastructure/exceptions/apiError";
 import bcrypt from "bcrypt";
 import {TokenService} from "./TokenService";
+import {injectable} from "tsyringe";
 
+@injectable()
 export class AuthService {
     constructor(
         private userService: UserService,

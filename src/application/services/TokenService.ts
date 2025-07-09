@@ -1,13 +1,15 @@
-import {ITokenRepository} from "../../core/interfaces/ITokenRepository";
+import {ITokenRepository, ITokenRepositoryToken} from "../../core/interfaces/ITokenRepository";
 import {Token} from "../../core/entities/Token";
 import jwt from "jsonwebtoken";
 import {EnvService} from "./EnvService";
 import {UserDTO} from "../dtos/UserDTO";
 import {JWTPayloadDTO} from "../dtos/JWTPayloadDTO";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class TokenService {
     constructor(
-        private tokenRepository: ITokenRepository,
+        @inject(ITokenRepositoryToken) private tokenRepository: ITokenRepository,
         private envService: EnvService,
     ) {
     }

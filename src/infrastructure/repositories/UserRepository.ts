@@ -1,7 +1,9 @@
 import {PrismaClient} from "@prisma/client";
 import {IUserRepository} from "../../core/interfaces/IUserRepository";
 import {User} from "../../core/entities/User";
+import {injectable} from "tsyringe";
 
+@injectable()
 export class UserRepository implements IUserRepository {
     private prisma = new PrismaClient()
 

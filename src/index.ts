@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -6,32 +7,31 @@ import {router} from "./infrastructure/router/router";
 import errorMiddleware from "./infrastructure/middlewares/errorMiddleware";
 import {TokenRepository} from './infrastructure/repositories/TokenRepository';
 import {UserRepository} from "./infrastructure/repositories/UserRepository";
-import {UserService} from "./application/services/UserService";
-import {TokenService} from "./application/services/TokenService";
-import {HetznerService} from "./application/services/HetznerService";
-import {AuthService} from "./application/services/AuthService";
 import {UserController} from "./infrastructure/controllers/UserController";
 import {HetznerController} from "./infrastructure/controllers/HetznerController";
 import {AuthController} from "./infrastructure/controllers/AuthController";
-import {HostService} from "./application/services/HostService";
 import {HostRepository} from "./infrastructure/repositories/HostRepository";
 import {HostController} from "./infrastructure/controllers/HostController";
+import {container} from "tsyringe";
+import {IUserRepositoryToken} from "./core/interfaces/IUserRepository";
+import {IHostRepositoryToken} from "./core/interfaces/IHostRepository";
+import {ITokenRepositoryToken} from "./core/interfaces/ITokenRepository";
 
-const tokenRepository = new TokenRepository();
-const hostRepository = new HostRepository();
-const userRepository = new UserRepository();
+container.register(IHostRepositoryToken, {
+    useClass: HostRepository,
+});
+container.register(ITokenRepositoryToken, {
+    useClass: TokenRepository,
+});
+container.register(IUserRepositoryToken, {
+    useClass: UserRepository,
+});
 
-const envService = new EnvService()
-const tokenService = new TokenService(tokenRepository, envService);
-const userService = new UserService(userRepository, tokenService);
-const hostService = new HostService(hostRepository);
-const hetznerService = new HetznerService(envService)
-const authService = new AuthService(userService, tokenService);
-
-const userController = new UserController(userService);
-const hetznerController = new HetznerController(hetznerService);
-const hostController = new HostController(hostService);
-const authController = new AuthController(authService);
+const userController = container.resolve(UserController);
+const authController = container.resolve(AuthController);
+const hostController = container.resolve(HostController);
+const hetznerController = container.resolve(HetznerController);
+const envService = container.resolve(EnvService);
 
 const port = envService.PORT
 const app = express();
@@ -42,7 +42,7 @@ app.use(cors({
 }))
 app.use(cookieParser());
 app.use(express.json());
-app.use('/api/v1', router(userController, authController, hetznerController, hostController, tokenService, envService));
+app.use('/api/v1', router(userController, authController, hetznerController, hostController));
 app.use(errorMiddleware);
 
 const main = async () => {

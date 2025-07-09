@@ -1,6 +1,7 @@
 import AxiosInstance = Axios.AxiosInstance;
 import axios from 'axios';
 import {EnvService} from "./EnvService";
+import {injectable} from "tsyringe";
 
 interface HetznerServer {
     id: number;
@@ -91,6 +92,7 @@ interface HetznerServersResponse {
     };
 }
 
+@injectable()
 export class HetznerService {
     private axiosInstance: AxiosInstance;
     private readonly perPage = 30;

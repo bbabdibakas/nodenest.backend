@@ -2,8 +2,12 @@ import {NextFunction, Request, Response} from "express";
 import ApiError from "../exceptions/apiError";
 import {TokenService} from "../../application/services/TokenService";
 import {EnvService} from "../../application/services/EnvService";
+import {container} from "tsyringe";
 
-export const authMiddleware = (tokenService: TokenService, envService: EnvService) => {
+export const authMiddleware = () => {
+    const tokenService = container.resolve(TokenService);
+    const envService = container.resolve(EnvService);
+
     return (req: Request, res: Response, next: NextFunction) => {
         try {
             const authorizationHeader = req.headers.authorization;

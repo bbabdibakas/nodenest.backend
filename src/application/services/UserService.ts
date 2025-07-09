@@ -1,13 +1,15 @@
-import {IUserRepository} from "../../core/interfaces/IUserRepository";
+import {IUserRepository, IUserRepositoryToken} from "../../core/interfaces/IUserRepository";
 import {User} from "../../core/entities/User";
 import bcrypt from "bcrypt";
 import {TokenService} from "./TokenService";
 import {UserDTO} from "../dtos/UserDTO";
 import {CreateUserDTO} from "../../infrastructure/controllers/UserController";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class UserService {
     constructor(
-        private userRepository: IUserRepository,
+        @inject(IUserRepositoryToken) private userRepository: IUserRepository,
         private tokenService: TokenService,
     ) {
     }

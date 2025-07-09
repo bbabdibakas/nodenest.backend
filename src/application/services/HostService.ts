@@ -1,10 +1,12 @@
-import {IHostRepository} from "../../core/interfaces/IHostRepository";
+import {IHostRepository, IHostRepositoryToken} from "../../core/interfaces/IHostRepository";
 import {Host} from "../../core/entities/Host";
 import {CreateHostDTO} from "../../infrastructure/controllers/HostController";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class HostService {
     constructor(
-        private hostRepository: IHostRepository,
+        @inject(IHostRepositoryToken) private hostRepository: IHostRepository,
     ) {
     }
 

@@ -1,6 +1,7 @@
 import {UserService} from "../../application/services/UserService";
 import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
+import {injectable} from "tsyringe";
 
 export interface CreateUserDTO {
     name: string;
@@ -8,8 +9,11 @@ export interface CreateUserDTO {
     password: string;
 }
 
+@injectable()
 export class UserController {
-    constructor(private userService: UserService) {
+    constructor(
+        private userService: UserService
+    ) {
     }
 
     async createUser(
