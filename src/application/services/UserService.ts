@@ -5,12 +5,14 @@ import {TokenService} from "./TokenService";
 import {UserDTO} from "../dtos/UserDTO";
 import {inject, injectable} from "tsyringe";
 import {CreateUserDTO} from "../dtos/CreateUserDTO";
+import {EnvService} from "./EnvService";
 
 @injectable()
 export class UserService {
     constructor(
         @inject(IUserRepositoryToken) private userRepository: IUserRepository,
         private tokenService: TokenService,
+        private envService: EnvService,
     ) {
     }
 
@@ -45,6 +47,12 @@ export class UserService {
             createdAt: new Date(user.createdAt),
             updatedAt: new Date(user.updatedAt),
         }))
+    }
+
+    async seedAdminUser() {
+        const adminData = this.envService.SEED_ADMIN_DATA
+
+        return this.createUser({...adminData})
     }
 
     getPayload(user: User): UserDTO {
