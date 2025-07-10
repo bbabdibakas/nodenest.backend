@@ -2,11 +2,7 @@ import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
 import {AuthService} from "../../application/services/AuthService";
 import {injectable} from "tsyringe";
-
-interface LoginUserDTO {
-    username: string;
-    password: string;
-}
+import {LoginUserDTO} from "../../application/dtos/LoginUserDTO";
 
 @injectable()
 export class AuthController {

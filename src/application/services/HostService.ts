@@ -1,7 +1,7 @@
 import {IHostRepository, IHostRepositoryToken} from "../../core/interfaces/IHostRepository";
 import {Host} from "../../core/entities/Host";
-import {CreateHostDTO} from "../../infrastructure/controllers/HostController";
 import {inject, injectable} from "tsyringe";
+import {CreateHostDTO} from "../dtos/CreateHostDTO";
 
 @injectable()
 export class HostService {

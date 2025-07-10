@@ -1,13 +1,8 @@
-import {UserService} from "../../application/services/UserService";
 import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
 import {injectable} from "tsyringe";
-
-export interface CreateUserDTO {
-    name: string;
-    username: string;
-    password: string;
-}
+import {UserService} from "../../application/services/UserService";
+import {CreateUserDTO} from "../../application/dtos/CreateUserDTO";
 
 @injectable()
 export class UserController {

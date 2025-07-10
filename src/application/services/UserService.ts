@@ -3,8 +3,8 @@ import {User} from "../../core/entities/User";
 import bcrypt from "bcrypt";
 import {TokenService} from "./TokenService";
 import {UserDTO} from "../dtos/UserDTO";
-import {CreateUserDTO} from "../../infrastructure/controllers/UserController";
 import {inject, injectable} from "tsyringe";
+import {CreateUserDTO} from "../dtos/CreateUserDTO";
 
 @injectable()
 export class UserService {

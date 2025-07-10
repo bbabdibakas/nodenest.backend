@@ -1,24 +1,8 @@
 import {Request, Response, NextFunction} from "express";
 import ApiError from "../exceptions/apiError";
-import {HostService} from "../../application/services/HostService";
-import {HostStatus} from "../../core/entities/Host";
 import {injectable} from "tsyringe";
-
-export interface CreateHostDTO {
-    hostId: number,
-    name: string,
-    status: HostStatus,
-    created: Date,
-    ip: string,
-    isIpBlocked: boolean,
-    isUnreachable: boolean | null,
-    isConfigFileExists: boolean | null,
-    wabaHealthStatusCode: number | null,
-}
-
-export interface ActualizeHostsDTO {
-    hosts: CreateHostDTO[];
-}
+import {HostService} from "../../application/services/HostService";
+import {CreateHostDTO} from "../../application/dtos/CreateHostDTO";
 
 @injectable()
 export class HostController {
@@ -35,7 +19,7 @@ export class HostController {
     }
 
     async actualizeHosts(
-        req: Request<Record<string, never>, {}, ActualizeHostsDTO>,
+        req: Request<Record<string, never>, {}, {hosts: CreateHostDTO[]}>,
         res: Response,
         next: NextFunction
     ) {
@@ -45,8 +29,15 @@ export class HostController {
             } = req.body || {}
 
             if (!hosts || !hosts.length) {
-                next(ApiError.BadRequest("at least one host required"));
+                next(ApiError.BadRequest("At least one host required"));
                 return
+            }
+
+            for (const host of hosts) {
+                if (!host.hostId || !host.status || !host.ip || !host.created || !host.name) {
+                    next(ApiError.BadRequest("Invalid or missing fields in one or more hosts"));
+                    return
+                }
             }
 
             const actualizedHosts = await this.hostService.actualizeHosts(hosts)
