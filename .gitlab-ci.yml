@@ -1,0 +1,28 @@
+stages:
+  - ssh_check
+  - deploy
+
+variables:
+  PROJECT_DIR: "/var/www/nodenest.backend"
+
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+ssh_check:
+  stage: ssh_check
+  script:
+    - ssh "$SSH_USER@$SSH_HOST" "echo 'SSH connection established. ✅'"
+
+deploy:
+  stage: deploy
+  script:
+    - ssh "$SSH_USER@$SSH_HOST" "
+      cd $PROJECT_DIR &&
+      git pull &&
+      docker compose up -d --build
+      "
+    - echo "Deployed successfully. ✅"
