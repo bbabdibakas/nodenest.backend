@@ -110,7 +110,7 @@ export class HetznerService {
     }
 
     async getServers() {
-        const excludedIds = [22979375, 24778878, 29215499, 36327703, 48783866, 49804652, 52595493, 65160700, 65452897];
+        const excludedIds = [22979375, 24778878, 29215499, 36327703, 48783866, 49804652, 52595493, 65160700, 65452897, 66804054];
         let allServers: HetznerServer[] = [];
         let page = 1;
 

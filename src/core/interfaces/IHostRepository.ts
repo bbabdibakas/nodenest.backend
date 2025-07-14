@@ -8,4 +8,4 @@ export interface IHostRepository {
     deleteHostsByHostId(ids: number[]): Promise<void>;
 }
 
-export const IHostRepositoryToken = "IUserRepository";
+export const IHostRepositoryToken = "IHostRepository";

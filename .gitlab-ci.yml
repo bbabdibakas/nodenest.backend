@@ -16,6 +16,8 @@ ssh_check:
   stage: ssh_check
   script:
     - ssh "$SSH_USER@$SSH_HOST" "echo 'SSH connection established. ✅'"
+  only:
+    - main
 
 deploy:
   stage: deploy
@@ -26,3 +28,5 @@ deploy:
       docker compose up -d --build
       "
     - echo "Deployed successfully. ✅"
+  only:
+    - main
